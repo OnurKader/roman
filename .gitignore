@@ -69,3 +69,5 @@
 .ccls-cache/
 bin/
 tags
+*.cflags
+*.cxxflags

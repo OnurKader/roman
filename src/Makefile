@@ -12,7 +12,7 @@ clean:
 build: ../bin/main.o
 	$(CC) -o ../bin/main ../bin/main.o
 
-run: ../bin/main
+run: build
 	@../bin/main
 
 install: ../bin/main
