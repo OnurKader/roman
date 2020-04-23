@@ -23,7 +23,7 @@ std::ostream& operator<<(std::ostream& os, const std::array<char, S> array)
 	return os;
 }
 
-static constexpr uint64_t getDecimalEquivelant(char chr)
+constexpr uint64_t getDecimalEquivelant(const char chr)
 {
 	switch(chr)
 	{
@@ -39,102 +39,49 @@ static constexpr uint64_t getDecimalEquivelant(char chr)
 	}
 }
 
-static constexpr char getRomanEquivelant(uint64_t num)
-{
-	switch(num)
-	{
-		case 1U: return 'I';
-		case 5U: return 'V';
-		case 10U: return 'X';
-		case 50U: return 'L';
-		case 100U: return 'C';
-		case 500U: return 'D';
-		case 1000U: return 'M';
-
-		default: return '\0';
-	}
-}
-
-// static constexpr const std::array roman_numerals {'I', 'V', 'X', 'L', 'C', 'D', 'M'};
-
 std::string decimalToRoman(size_t number)
 {
 	std::string roman_str;
 	roman_str.resize(16ULL);
+	constexpr const size_t decimals[] = {
+		7000, 6000, 5000, 4000, 3000, 2000, 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
 
-	// Fill the start with the appropriate number of M's
-	if(number >= 1000ULL)
+	constexpr const char* letters[] = {"MMMMMMM",
+									   "MMMMMM",
+									   "MMMMM",
+									   "MMMM",
+									   "MMM",
+									   "MM",
+									   "M",
+									   "CM",
+									   "D",
+									   "CD",
+									   "C",
+									   "XC",
+									   "L",
+									   "XL",
+									   "X",
+									   "IX",
+									   "V",
+									   "IV",
+									   "I"};
+
+	size_t i = 0ULL;
+	while(number > 0ULL)
 	{
-		memset(roman_str.data(), 'M', number / 1000ULL);
-		number -= (number / 1000ULL) * 1000ULL;	   // Remove the thousands digit
-		std::cout << number << std::endl;
-	}
+		size_t div = number / decimals[i];
+		number %= decimals[i];
 
-	// For some reason I decided to just say number -= 500, I mean it won't have 2 500's that's a
-	// thousand, but it will be consistent with others and can be recursed
-	if(number >= 500ULL)
-	{
-		const size_t ratio = number / 500ULL;
-		for(size_t i = 0ULL; i < ratio; ++i)
-			roman_str += 'D';
-		number -= 500ULL;
-		std::cout << number << std::endl;
-	}
+		while(div--)
+			roman_str.append(letters[i]);
 
-	// These ifs call for recursion with the 1000 | 100 passed in
-	if(number >= 100ULL)
-	{
-		// Keep a count here cus 400 == CD
-		const size_t ratio = number / 100ULL;
-		for(size_t i = 0ULL; i < ratio; ++i)
-			roman_str += 'C';
-		number -= (number / 100ULL) * 100ULL;
-		std::cout << number << std::endl;
+		++i;
 	}
-
-	if(number >= 50ULL)
-	{
-		const size_t ratio = number / 50ULL;
-		for(size_t i = 0ULL; i < ratio; ++i)
-			roman_str += 'L';
-		number -= (number / 50ULL) * 50ULL;
-		std::cout << number << std::endl;
-	}
-
-	if(number >= 10ULL)
-	{
-		const size_t ratio = number / 10ULL;
-		for(size_t i = 0ULL; i < ratio; ++i)
-			roman_str += 'X';
-		number -= (number / 10ULL) * 10ULL;
-		std::cout << number << std::endl;
-	}
-
-	if(number >= 5ULL)
-	{
-		const size_t ratio = number / 5ULL;
-		for(size_t i = 0ULL; i < ratio; ++i)
-			roman_str += 'V';
-		number -= (number / 5ULL) * 5ULL;
-		std::cout << number << std::endl;
-	}
-
-	if(number >= 1ULL)
-	{
-		const size_t ratio = number / 1ULL;
-		for(size_t i = 0ULL; i < ratio; ++i)
-			roman_str += 'I';
-		number -= (number / 1ULL) * 1ULL;
-		std::cout << number << std::endl;
-	}
-
-	// TODO: Later on add more restrictions to the ranges, like 50 < x < 80 cause 90 would be XC and
-	// not LXXXX
 
 	return roman_str;
 }
 
-uint64_t romanToDecimal(std::string_view str)
+constexpr uint64_t romanToDecimal(std::string_view str)
 {
 	uint64_t result = 0ULL;
 
@@ -181,10 +128,12 @@ int main(int argc, char** argv)
 	// seperately and don't require a new line, just whitespace
 	for(size_t i = 1ULL; i < static_cast<size_t>(argc); ++i)
 	{
-		//		std::string result = decimalToRoman(static_cast<size_t>(std::atoll(argv[i])));
-		uint64_t result = romanToDecimal(argv[i]);
+		// Determine if the input is a decimal or roman
+
+		std::string result = decimalToRoman(static_cast<size_t>(std::atoll(argv[i])));
+		//		uint64_t result = romanToDecimal(argv[i]);
 		std::cout << "My Guess: " << result << std::endl;
-		std::cout << "Result:   4269" << std::endl;
+		std::cout << "Result:   MMMMCCLXIX" << std::endl;
 	}
 
 	return 0;
