@@ -4,24 +4,11 @@
 #include <string>
 #include <vector>
 
-template<typename T, size_t S>
-std::ostream& operator<<(std::ostream& os, const std::array<T, S> array)
-{
-	os << "( ";
-	for(size_t i = 0ULL; i < array.size() - 1; ++i)
-		os << array[i] << ", ";
-	os << array.back();
-	os << " )";
-	return os;
-}
+constexpr const size_t decimals[] = {
+	1000ULL, 900ULL, 500ULL, 400ULL, 100ULL, 90ULL, 50ULL, 40ULL, 10ULL, 9ULL, 5ULL, 4ULL, 1ULL};
 
-template<size_t S>
-std::ostream& operator<<(std::ostream& os, const std::array<char, S> array)
-{
-	for(const char& chr: array)
-		os << chr;
-	return os;
-}
+constexpr const char* letters[] = {
+	"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
 
 constexpr uint64_t getDecimalEquivelant(const char chr)
 {
@@ -43,28 +30,6 @@ std::string decimalToRoman(size_t number)
 {
 	std::string roman_str;
 	roman_str.resize(16ULL);
-	constexpr const size_t decimals[] = {
-		7000, 6000, 5000, 4000, 3000, 2000, 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
-
-	constexpr const char* letters[] = {"MMMMMMM",
-									   "MMMMMM",
-									   "MMMMM",
-									   "MMMM",
-									   "MMM",
-									   "MM",
-									   "M",
-									   "CM",
-									   "D",
-									   "CD",
-									   "C",
-									   "XC",
-									   "L",
-									   "XL",
-									   "X",
-									   "IX",
-									   "V",
-									   "IV",
-									   "I"};
 
 	size_t i = 0ULL;
 	while(number > 0ULL)
@@ -138,3 +103,4 @@ int main(int argc, char** argv)
 
 	return 0;
 }
+
