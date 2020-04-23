@@ -14,18 +14,19 @@ constexpr uint64_t getDecimalEquivelant(const char chr)
 {
 	switch(chr)
 	{
-		case 'I': return 1ULL;
-		case 'V': return 5ULL;
-		case 'X': return 10ULL;
-		case 'L': return 50ULL;
-		case 'C': return 100ULL;
-		case 'D': return 500ULL;
-		case 'M': return 1000ULL;
+		case 'I': return decimals[12];
+		case 'V': return decimals[10];
+		case 'X': return decimals[8];
+		case 'L': return decimals[6];
+		case 'C': return decimals[4];
+		case 'D': return decimals[2];
+		case 'M': return decimals[0];
 
 		default: return 0ULL;
 	}
 }
 
+// Just make a constexpr char* version of this
 std::string decimalToRoman(size_t number)
 {
 	std::string roman_str;
