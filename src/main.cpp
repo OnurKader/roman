@@ -99,6 +99,8 @@ constexpr uint64_t romanToDecimal(const char* str)
 	return result;
 }
 
+// FIXME: 99 is CXIX instead of IC
+
 int main(int argc, char** argv)
 {
 	// Check if no arguments, go into REPL
@@ -114,7 +116,19 @@ int main(int argc, char** argv)
 			// Remove the last character which is a newline
 			input[--read_size] = '\0';
 
-			// Determine if the input is a decimal or roman
+			if(isDecimal(input))
+			{
+				std::string result = decimalToRoman(static_cast<size_t>(std::atoll(input)));
+				std::cout << result << std::endl;
+			}
+			else if(isRoman(input))
+			{
+				size_t result = romanToDecimal(input);
+				std::cout << result << std::endl;
+			}
+			else
+				std::cerr << "Couldn't recognize number" << std::endl;
+
 			std::cout << "> ";
 		}
 
