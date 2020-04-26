@@ -4,11 +4,34 @@
 #include <string>
 #include <vector>
 
-constexpr const size_t decimals[] = {
+constexpr const std::array decimals {
 	1000ULL, 900ULL, 500ULL, 400ULL, 100ULL, 90ULL, 50ULL, 40ULL, 10ULL, 9ULL, 5ULL, 4ULL, 1ULL};
 
-constexpr const char* letters[] = {
+constexpr const std::array conversion_letters {
 	"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+
+constexpr const std::array letters {'I', 'V', 'X', 'L', 'C', 'D', 'M'};
+
+bool isDecimal(const char* str)
+{
+	while(*str != '\0')
+		if(!isdigit(*str++))
+			return false;
+	return true;
+}
+
+bool isRomanCharacter(char chr)
+{
+	return (std::find(letters.begin(), letters.end(), chr) != letters.end());
+}
+
+bool isRoman(const char* str)
+{
+	while(*str != '\0')
+		if(!isRomanCharacter(*(str++)))
+			return false;
+	return true;
+}
 
 constexpr uint64_t getDecimalEquivelant(const char chr)
 {
@@ -39,7 +62,7 @@ std::string decimalToRoman(size_t number)
 		number %= decimals[i];
 
 		while(div--)
-			roman_str.append(letters[i]);
+			roman_str.append(conversion_letters[i]);
 
 		++i;
 	}
@@ -47,11 +70,20 @@ std::string decimalToRoman(size_t number)
 	return roman_str;
 }
 
-constexpr uint64_t romanToDecimal(std::string_view str)
+constexpr size_t len(const char* str)
+{
+	size_t length = 0ULL;
+	while(*(str++) != '\0')
+		++length;
+
+	return length;
+}
+
+constexpr uint64_t romanToDecimal(const char* str)
 {
 	uint64_t result = 0ULL;
 
-	for(size_t i = 0ULL; i < str.length(); ++i)
+	for(size_t i = 0ULL; i < len(str); ++i)
 	{
 		uint64_t first = getDecimalEquivelant(str[i]);
 		uint64_t second = getDecimalEquivelant(str[i + 1]);
@@ -67,8 +99,6 @@ constexpr uint64_t romanToDecimal(std::string_view str)
 	return result;
 }
 
-// 4269 -> MMMMCCLXIX
-
 int main(int argc, char** argv)
 {
 	// Check if no arguments, go into REPL
@@ -76,32 +106,39 @@ int main(int argc, char** argv)
 	if(argc == 1)
 	{
 		char* input = nullptr;
-		size_t len = 0ULL;
+		size_t length = 0ULL;
 		ssize_t read_size = 0LL;
-		while((read_size = getline(&input, &len, stdin)) != -1)
+		std::cout << "> ";
+		while((read_size = getline(&input, &length, stdin)) != -1)
 		{
 			// Remove the last character which is a newline
 			input[--read_size] = '\0';
 
 			// Determine if the input is a decimal or roman
+			std::cout << "> ";
 		}
 
 		free(input);
+		std::cout << std::endl;
 		return 0;
 	}
 
-	// Non REPL, the rest of the arguments are the numbers, if there are multiple do them
-	// seperately and don't require a new line, just whitespace
-	for(size_t i = 1ULL; i < static_cast<size_t>(argc); ++i)
+	// Non REPL, from argv
+	for(uint8_t i = 1U; i < static_cast<uint8_t>(argc); ++i)
 	{
-		// Determine if the input is a decimal or roman
-
-		std::string result = decimalToRoman(static_cast<size_t>(std::atoll(argv[i])));
-		//		uint64_t result = romanToDecimal(argv[i]);
-		std::cout << "My Guess: " << result << std::endl;
-		std::cout << "Result:   MMMMCCLXIX" << std::endl;
+		if(isDecimal(argv[i]))
+		{
+			std::string result = decimalToRoman(static_cast<size_t>(std::atoll(argv[i])));
+			std::cout << argv[i] << " is " << result << std::endl;
+		}
+		else if(isRoman(argv[i]))
+		{
+			size_t result = romanToDecimal(argv[i]);
+			std::cout << argv[i] << " is " << result << std::endl;
+		}
+		else
+			std::cerr << "Couldn't recognize number" << std::endl;
 	}
 
 	return 0;
 }
-
