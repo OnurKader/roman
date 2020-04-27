@@ -12,20 +12,27 @@ constexpr const std::array conversion_letters {
 
 constexpr const std::array letters {'I', 'V', 'X', 'L', 'C', 'D', 'M'};
 
-bool isDecimal(const char* str)
+constexpr bool isDecimal(const char* str)
 {
 	while(*str != '\0')
-		if(!isdigit(*str++))
+		if(!std::isdigit(*str++))
 			return false;
 	return true;
 }
 
-bool isRomanCharacter(char chr)
+constexpr bool isRomanCharacter(char chr)
 {
-	return (std::find(letters.begin(), letters.end(), chr) != letters.end());
+	//	return (std::find(letters.begin(), letters.end(), chr) != letters.end());
+	bool found = false;
+	for(const char& letter: letters)
+	{
+		if(chr == letter)
+			found = true;
+	}
+	return found;
 }
 
-bool isRoman(const char* str)
+constexpr bool isRoman(const char* str)
 {
 	while(*str != '\0')
 		if(!isRomanCharacter(*(str++)))
@@ -68,6 +75,24 @@ std::string decimalToRoman(size_t number)
 	}
 
 	return roman_str;
+}
+
+constexpr const char* constexprDecimalToRoman(size_t number, char* str)
+{
+	size_t i = 0ULL;
+	while(number > 0ULL)
+	{
+		size_t div = 0;
+		div = number / decimals[i];
+		number %= decimals[i];
+
+		while(div--)
+			std::strcat(str, conversion_letters[i]);
+
+		++i;
+	}
+
+	return str;
 }
 
 constexpr size_t len(const char* str)
@@ -118,8 +143,12 @@ int main(int argc, char** argv)
 
 			if(isDecimal(input))
 			{
-				std::string result = decimalToRoman(static_cast<size_t>(std::atoll(input)));
+				//				std::string result =
+				// decimalToRoman(static_cast<size_t>(std::atoll(input)));
+				char* result = new char[128U];
+				constexprDecimalToRoman(static_cast<size_t>(std::atoll(input)), result);
 				std::cout << result << std::endl;
+				delete[] result;
 			}
 			else if(isRoman(input))
 			{
@@ -142,8 +171,12 @@ int main(int argc, char** argv)
 	{
 		if(isDecimal(argv[i]))
 		{
-			std::string result = decimalToRoman(static_cast<size_t>(std::atoll(argv[i])));
+			//			std::string result =
+			// decimalToRoman(static_cast<size_t>(std::atoll(argv[i])));
+			char* result = new char[128U];
+			constexprDecimalToRoman(static_cast<size_t>(std::atoll(argv[i])), result);
 			std::cout << argv[i] << " is " << result << std::endl;
+			delete[] result;
 		}
 		else if(isRoman(argv[i]))
 		{
