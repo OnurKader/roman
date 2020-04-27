@@ -7,9 +7,11 @@ clean:
 	rm -f ../bin/*
 
 ../bin/%.o: %.cpp
+	mkdir -p ../bin
 	$(CC) -c $(CFLAGS) $< -o ../bin/$@
 
 build: ../bin/main.o
+	mkdir -p ../bin
 	$(CC) -o ../bin/main ../bin/main.o
 
 run: build
