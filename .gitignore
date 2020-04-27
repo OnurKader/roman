@@ -67,7 +67,7 @@
 # End of https://www.gitignore.io/api/c++,qtcreator
 
 .ccls-cache/
-bin/
+bin/*
 tags
 *.cflags
 *.cxxflags
